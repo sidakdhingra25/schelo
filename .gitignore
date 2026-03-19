@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+
+# Build
+dist
+
+# Examples
+examples/
+
+# cursor
+.cursor/
+
+# Editor
+.vscode
+.idea
+.DS_Store
+
+# Logs
+logs
+logs/*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+#pnpm
+pnpm-lock.yaml
+pnpm-workspace.yaml
+.pnpm-store
