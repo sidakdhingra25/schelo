@@ -227,6 +227,34 @@ export const interceptor = createInterceptor({
 });
 ```
 
+### What you see when validation fails
+
+If **`console`** is in `destinations` and a request/response **does not** match your Zod schema, the package prints a **boxed message** in the browser DevTools console (or terminal). The exact API depends on `mode`:
+
+| `mode` | On failure |
+| --- | --- |
+| `warn` | **`console.warn`** with the box below |
+| `strict` | **`console.error`** with the same box, then it **throws** so execution stops |
+| `observe` | **`console.log`** with the same box (no throw) |
+
+**Example shape** (wording depends on the field; this matches how failures are formatted):
+
+```text
+┌─ api-schema-interceptor ──────────────────────────────────────┐
+│ FAIL  GET /api/users/:id  [response]                          │
+│                                                                │
+│   ✗  email  invalid format — expected a valid email           │
+│   ✗  name   field is missing                                  │
+│                                                                │
+│ mode: warn · 2 errors · 12:34:56.789Z                          │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- **`FAIL … [request]`** = the JSON you **sent** didn’t match `request`.
+- **`FAIL … [response]`** = the JSON you **received** didn’t match `response`.
+
+Successful calls can show a short **✓** line when `mode` is `warn` or `strict` (see `log-store.ts`). If you set `validate: false` on a route, that route is skipped—no box and no ✓ line for it.
+
 ## Tables (simple reference)
 
 ### `createInterceptor({ ... })` options
