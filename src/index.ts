@@ -1,5 +1,4 @@
 export { SchemaInterceptor } from "./registry";
-export { enableAxios } from "./adapters/axios";
 export type {
   InterceptorConfig,
   InterceptorMode,

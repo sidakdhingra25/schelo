@@ -1,11 +1,11 @@
 ## API Schema Interceptor
 
-> **v2.0** removes in-memory logging (`getLogs`, `subscribe`, `destinations`, etc.). Output is **console only**. See [CHANGELOG.md](./CHANGELOG.md).
 
 This package helps you validate your API requests and responses against your Zod schemas.
 When a call matches a route you registered, it checks the JSON and logs whether it passed or failed.
 
-It is designed to be easy to plug into apps that use `fetch` (and it also has an Axios adapter).
+It is designed to be easy to plug into apps that use `fetch`.
+
 
 ---
 
@@ -17,7 +17,7 @@ Here’s what happens, step by step:
 | --- | --- | --- |
 | 1 | You list your API endpoints in `routes` | It keeps a map of which endpoint should be validated |
 | 2 | You attach `request` and/or `response` Zod schemas | It knows what “valid JSON” should look like |
-| 3 | Your app makes an API call | It watches the JSON traffic (for `fetch`, and Axios if enabled) |
+| 3 | Your app makes an API call | It watches the JSON traffic for `fetch` |
 | 4 | The call matches one of your route keys | It checks the JSON against the schema |
 | 5 | Validation passes | Nothing is printed for success (only failures produce console output) |
 | 6 | Validation fails | It prints a clear console message showing what field is wrong |
@@ -33,10 +33,18 @@ Add this package to your app:
 pnpm add api-schema-interceptor
 ```
 
+```bash
+npm install api-schema-interceptor
+```
+
 You also need **Zod** in your project (it’s a peer dependency—you use it to write your schemas). If you already have Zod, you’re done. If not, add it:
 
 ```bash
 pnpm add api-schema-interceptor zod
+```
+
+```bash
+npm install api-schema-interceptor zod
 ```
 
 ---
@@ -238,14 +246,14 @@ When a request/response **does not** match your Zod schema, the package prints a
 **Example shape** (wording depends on the field; this matches how failures are formatted):
 
 ```text
-┌─ api-schema-interceptor ───────────────────────────────────────────────────────────────────────┐
-│ FAIL  GET /api/users/:id  [response]                                                         │
-│                                                                                               │
-│   ✗  email  invalid format — expected a valid email                                            │
-│   ✗  name   field is missing                                                                   │
-│                                                                                               │
-│ mode: warn · 2 lines / 2 underlying · 12:34:56.789Z                                          │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─ api-schema-interceptor ────────────────────────────────────────────────────────────────────────────┐
+│ FAIL  GET /api/users/:id  [response]                                                                 │
+│                                                                                                      │
+│   ✗  email  invalid format — expected a valid email                                                  │
+│   ✗  name  field is missing                                                                          │
+│                                                                                                      │
+│ mode: warn · 2 lines / 2 underlying · 12:34:56.789Z                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 - **`FAIL … [request]`** = the JSON you **sent** didn’t match `request`.
@@ -308,7 +316,7 @@ The package gives you:
 
 - `createInterceptor(config)` - create an interceptor instance
 - `SchemaInterceptor` - the class (mostly for advanced usage / typing)
-- `enableAxios(axiosInstance, interceptor)` - validate Axios requests/responses
+- `validateRequest(...)` / `validateResponse(...)` - manual validation helpers for custom clients
 - `validateMatch(...)` - helper for tests (checks matching + would-validate, without HTTP calls)
 
 ---

@@ -1,7 +1,7 @@
 {
   "name": "api-schema-interceptor",
   "version": "1.0.0",
-  "description": "",
+  "description": "Validate fetch request and response payloads against Zod schemas with clear console output and strict/warn/observe modes.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -22,10 +22,35 @@
   },
   "files": [
     "dist",
-    "bin"
+    "bin",
+    "LICENSE"
   ],
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "zod",
+    "validation",
+    "schema",
+    "fetch",
+    "api",
+    "interceptor",
+    "request",
+    "response",
+    "typescript",
+    "react",
+    "nextjs",
+    "debug",
+    "devtools",
+    "runtime-validation",
+    "api-validation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sidakdhingra25/api-schema-interceptor"
+  },
+  "homepage": "https://github.com/sidakdhingra25/api-schema-interceptor#readme",
+  "bugs": {
+    "url": "https://github.com/sidakdhingra25/api-schema-interceptor/issues"
+  },
+  "author": "Sidak Dhingra",
+  "license": "MIT",
   "packageManager": "pnpm@10.30.3"
 }
