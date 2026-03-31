@@ -2,7 +2,7 @@
 
 
 This package helps you validate your API requests and responses against your Zod schemas.
-When a call matches a route you registered, it checks the JSON and logs whether it passed or failed.
+When a call matches a route you registered, it checks the JSON and reports failures in the console (successful validation stays quiet).
 
 It is designed to be easy to plug into apps that use `fetch`.
 
@@ -158,7 +158,7 @@ Each route entry can include:
 - `response`: validate the JSON response body (optional)
 - `validate`: optional boolean to turn validation on/off for this route
   - default is `true`
-  - if `validate: false`, it will not validate and will not log errors for that route
+  - if `validate: false`, it will not validate and will not print validation errors for that route
 
 Example:
 
@@ -217,7 +217,7 @@ export const interceptor = createInterceptor({
       response: z.union([userSchema, apiErrorSchema]),
     },
 
-    // Skipped endpoint: matched, but no validation + no warn/error logs
+    // Skipped endpoint: matched, but no validation + no console output for failures
     "POST /api/login": {
       validate: false, // opt out for this endpoint
       request: z.object({
@@ -268,9 +268,9 @@ Successful validation does not print anything to the console (only failures prod
 When the same structural problem repeats across **array elements** (for example `0.title`, `1.title`, … with the same expected/received types), the default **`"array"`** mode groups those issues by a key derived from the **path pattern** (numbers become `*`), **`expected`**, and **`received`**—**not** by Zod’s free-form `message`, so groups stay stable.
 
 - **Single numeric segment in the path** (e.g. `*.title`): multiple matching issues print as **one** `✗` line with a short index summary (contiguous ranges or comma-separated indices).
-- **More than one numeric segment** (nested arrays, e.g. `*.posts.*.id`): v2.2 does **not** merge those into a single summary line; you get **one line per issue**. Richer nested summaries are **planned**; the source includes a **`// TODO v2: nested aggregation`** marker.
+- **More than one numeric segment** (nested arrays, e.g. `*.posts.*.id`): those issues do **not** merge into a single summary line; you get **one line per issue**.
 
-Set **`consoleAggregation: "off"`** if you prefer the older behavior: **one console row per `FieldError`**, with literal paths like `0.title`.
+Set **`consoleAggregation: "off"`** if you prefer **one console row per `FieldError`**, with literal paths like `0.title`.
 
 ## Tables (simple reference)
 
@@ -292,21 +292,15 @@ Set **`consoleAggregation: "off"`** if you prefer the older behavior: **one cons
 | `response` | Zod schema | `undefined` | Rules for the JSON **you get back** (optional) |
 | `validate` | `boolean` | `true` | **false** = “don’t check this URL and don’t complain in the console for it” |
 
-### Validation/log result types
+### Validation result types
 
 | Type | Field | In plain English |
 | --- | --- | --- |
 | `ValidationResult` | `valid` | **true** = the JSON matched your rules |
 | `ValidationResult` | `errors` | What went wrong, field by field (empty when all good) |
-| `ValidationResult` | `log?` | One full record of that check (only when a route matched) |
 | `FieldError` | `path` | Which part of the JSON was wrong (e.g. `user.email`) |
 | `FieldError` | `expected` / `received` | What you asked for vs what actually came back |
 | `FieldError` | `message` | Short human sentence about the problem |
-| `LogEntry` | `method` / `path` / `routePattern` | Which call this was (GET/POST, full URL, and the pattern you registered) |
-| `LogEntry` | `direction` | **request** = outgoing body, **response** = incoming body |
-| `LogEntry` | `valid` + `errors` | Pass or fail, plus the list of issues |
-| `LogEntry` | `mode` | Same idea as your global mode (observe / warn / strict) |
-| `LogEntry` | `statusCode?` | For responses: the HTTP status number (200, 404, etc.) |
 
 ---
 
