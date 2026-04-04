@@ -33,7 +33,7 @@ function detectFramework(pkg) {
 
 function printHelp() {
   console.log("Usage:");
-  console.log("  api-lens init");
+  console.log("  schelo init");
 }
 
 function createPrompt() {
@@ -142,7 +142,7 @@ async function shouldOverwrite(prompt, relPath) {
 
 function renderConfigFile(mode) {
   return [
-    'import { createInterceptor } from "api-lens";',
+    'import { createInterceptor } from "schelo";',
     'import { z } from "zod";',
     "",
     "export const interceptor = createInterceptor({",
@@ -312,7 +312,7 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error("Failed to run api-lens CLI.");
+  console.error("Failed to run schelo CLI.");
   console.error(error instanceof Error ? error.message : error);
   process.exitCode = 1;
 });

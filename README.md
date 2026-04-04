@@ -1,18 +1,56 @@
-## API Lens
+## Schelo
 
 Type-safe APIs from request to response.
+
+**Documentation:** [schelo.xyz](https://schelo.xyz)
+
+
+---
+## Install
+
+Add this package to your app:
+
+```bash
+pnpm add schelo
+```
+
+```bash
+npm install schelo
+```
+
+You also need **Zod** in your project (it’s a peer dependency—you use it to write your schemas). If you already have Zod, you’re done. If not, add it:
+
+```bash
+pnpm add schelo zod
+```
+
+```bash
+npm install schelo zod
+```
+
+### Run the CLI
+
+From your app folder:
+
+```bash
+npx schelo init
+```
+
+### Zod (peer dependency)
+
+- **Supported versions:** `zod` **`>=3.20.0 <5`** (same range as `peerDependencies` in this package’s `package.json`).
+- **Zod 3 and Zod 4** are both fine within that range—define your route schemas with the same Zod your app already uses.
+- This package **does not bundle Zod**. Your app must list `zod` as a dependency so schemas and validation share one library.
+- Keep **a single Zod version** in your dependency tree. If your package manager warns about peers or validation behaves oddly, align `zod` versions and remove duplicate installs (e.g. `pnpm why zod`, `npm ls zod`).
+
+---
+
+## What it does
 
 This package helps you validate your API requests and responses against your Zod schemas.
 When a call matches a route you registered, it checks the JSON and reports failures in the console (successful validation stays quiet).
 
 It is designed to be easy to plug into apps that use `fetch`.
-
-**Documentation:** [api-lens.xyz](https://api-lens.xyz)
-
-
----
-
-## What it does
 
 Here’s what happens, step by step:
 
@@ -28,44 +66,6 @@ Here’s what happens, step by step:
 
 ---
 
-## Install
-
-Add this package to your app:
-
-```bash
-pnpm add api-lens
-```
-
-```bash
-npm install api-lens
-```
-
-You also need **Zod** in your project (it’s a peer dependency—you use it to write your schemas). If you already have Zod, you’re done. If not, add it:
-
-```bash
-pnpm add api-lens zod
-```
-
-```bash
-npm install api-lens zod
-```
-
-### Run the CLI
-
-From your app folder:
-
-```bash
-npx api-lens init
-```
-
-### Zod (peer dependency)
-
-- **Supported versions:** `zod` **`>=3.20.0 <5`** (same range as `peerDependencies` in this package’s `package.json`).
-- **Zod 3 and Zod 4** are both fine within that range—define your route schemas with the same Zod your app already uses.
-- This package **does not bundle Zod**. Your app must list `zod` as a dependency so schemas and validation share one library.
-- Keep **a single Zod version** in your dependency tree. If your package manager warns about peers or validation behaves oddly, align `zod` versions and remove duplicate installs (e.g. `pnpm why zod`, `npm ls zod`).
-
----
 
 ## React setup
 
@@ -74,27 +74,27 @@ For **Vite**, **CRA**, **React Router**, etc. (not Next.js App Router). There is
 ### 1. Install
 
 ```bash
-pnpm add api-lens
+pnpm add schelo
 ```
 
 ```bash
-npm install api-lens
+npm install schelo
 ```
 
 You need **Zod** as a peer dependency (see **Install** above). If it is not already in your project:
 
 ```bash
-pnpm add api-lens zod
+pnpm add schelo zod
 ```
 
 ```bash
-npm install api-lens zod
+npm install schelo zod
 ```
 
 ### 2. Schema module
 
 ```bash
-npx api-lens init
+npx schelo init
 ```
 
 Pick **React**. The CLI creates **`lib/api-schemas.ts`** or **`src/lib/api-schemas.ts`**. Export **`interceptor`** from `createInterceptor({ ... })` (or add that file yourself).
@@ -140,7 +140,7 @@ Rarely needed; use for tests or when you restore real **`fetch`**.
 From your Next.js app folder:
 
 ```bash
-npx api-lens init
+npx schelo init
 ```
 
 Follow the prompts (framework + mode). When it finishes, you’ll have the files below and printed instructions for your root layout.
@@ -186,7 +186,7 @@ Your import path may differ (e.g. `@/src/components/...`); follow the CLI output
 
 ### Manual setup (App Router)
 
-Skip `npx api-lens init` if you want full control. Add a **client** provider, wrap your App Router root layout, and define routes in **`lib/api-schemas.ts`** or **`src/lib/api-schemas.ts`**.
+Skip `npx schelo init` if you want full control. Add a **client** provider, wrap your App Router root layout, and define routes in **`lib/api-schemas.ts`** or **`src/lib/api-schemas.ts`**.
 
 #### 1. Provider file
 
@@ -241,7 +241,7 @@ Adjust the import to match your project (e.g. `@/src/components/providers/Interc
 Export an **`interceptor`** from **`createInterceptor`**. Route keys use **`METHOD /path`** (dynamic segments like `:id` are supported). Add **`request`** and/or **`response`** Zod schemas per route.
 
 ```ts
-import { createInterceptor } from "api-lens";
+import { createInterceptor } from "schelo";
 import { z } from "zod";
 
 const apiErrorSchema = z.object({ error: z.string() });
@@ -311,7 +311,7 @@ routes: {
 This example shows the main config fields and how route validation works. The URLs below are generic placeholders—swap them for your own API paths.
 
 ```ts
-import { createInterceptor } from "api-lens";
+import { createInterceptor } from "schelo";
 import { z } from "zod";
 
 const userSchema = z.object({
@@ -370,7 +370,7 @@ When a request/response **does not** match your Zod schema, the package prints a
 **Example shape** (wording depends on the field; this matches how failures are formatted):
 
 ```text
-┌─ api-lens ────────────────────────────────────────────────────────────────────────────┐
+┌─ schelo ────────────────────────────────────────────────────────────────────────────┐
 │ FAIL  GET /api/users/:id  [response]                                                                 │
 │                                                                                                      │
 │   ✗  email  invalid format — expected a valid email                                                  │

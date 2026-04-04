@@ -1,6 +1,6 @@
 {
-  "name": "api-lens",
-  "version": "1.0.0",
+  "name": "schelo",
+  "version": "1.0.1",
   "description": "Validate fetch request and response payloads against Zod schemas with clear console output and strict/warn/observe modes.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,7 +12,7 @@
     }
   },
   "bin": {
-    "api-lens": "bin/api-lens.js"
+    "schelo": "bin/schelo.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -49,15 +49,16 @@
     "devtools",
     "runtime-validation",
     "api-validation",
-    "lens"
+    "lens",
+    "schelo"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/sidakdhingra25/api-lens"
+    "url": "https://github.com/sidakdhingra25/schelo"
   },
-  "homepage": "https://github.com/sidakdhingra25/api-lens#readme",
+  "homepage": "https://github.com/sidakdhingra25/schelo#readme",
   "bugs": {
-    "url": "https://github.com/sidakdhingra25/api-lens/issues"
+    "url": "https://github.com/sidakdhingra25/schelo/issues"
   },
   "author": "Sidak Dhingra",
   "license": "MIT",

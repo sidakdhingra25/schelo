@@ -92,7 +92,7 @@ export function printToConsole(entry: LogEntry, consoleAggregation: ConsoleAggre
 
   /** Inner width between box borders (wide enough for aggregated array rows). */
   const INNER = 100;
-  const label = "api-lens";
+  const label = "schelo";
   const topPrefix = `┌─ ${label} `;
   const bottom = "└" + "─".repeat(INNER + 2) + "┘";
   const top =

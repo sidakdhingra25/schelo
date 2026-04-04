@@ -100,7 +100,7 @@ export class SchemaInterceptor<TRoutes extends Record<string, RouteSchema>> {
     if (!match) {
       if (this.warnOnUnmatched) {
         console.warn(
-          `[api-lens] No schema registered for ${method.toUpperCase()} ${url}\n` +
+          `[schelo] No schema registered for ${method.toUpperCase()} ${url}\n` +
             `  Registered routes: ${this.getRegisteredRoutes().join(", ") || "(none)"}\n` +
             `  → If this route should be validated, add it to your routes config.`
         );
@@ -115,7 +115,7 @@ export class SchemaInterceptor<TRoutes extends Record<string, RouteSchema>> {
       (typeof process === "undefined" || process.env.NODE_ENV !== "production")
     ) {
       console.log(
-        `[api-lens:debug] ${method.toUpperCase()} ${url} → ${match.routeKey}`
+        `[schelo:debug] ${method.toUpperCase()} ${url} → ${match.routeKey}`
       );
     }
 
@@ -146,7 +146,7 @@ export class SchemaInterceptor<TRoutes extends Record<string, RouteSchema>> {
 
     if (!entry.valid && this.mode === "strict") {
       const msg = errors.map((e) => `${e.path.join(".")}: ${e.message}`).join("; ");
-      throw new Error(`[api-lens] Schema violation on ${method} ${url}: ${msg}`);
+      throw new Error(`[schelo] Schema violation on ${method} ${url}: ${msg}`);
     }
 
     return { valid: entry.valid, errors, log: entry };
@@ -156,7 +156,7 @@ export class SchemaInterceptor<TRoutes extends Record<string, RouteSchema>> {
     if (this.enabled) {
       if (typeof process === "undefined" || process.env.NODE_ENV !== "production") {
         console.warn(
-          "[api-lens] enable() called but interceptor is already enabled. " +
+          "[schelo] enable() called but interceptor is already enabled. " +
             "Call disable() first if you want to re-enable."
         );
       }
@@ -165,7 +165,7 @@ export class SchemaInterceptor<TRoutes extends Record<string, RouteSchema>> {
 
     if (typeof globalThis.fetch === "undefined") {
       console.warn(
-        "[api-lens] enable() called but globalThis.fetch is not defined. " +
+        "[schelo] enable() called but globalThis.fetch is not defined. " +
           "Requires a browser or Node 18+ environment."
       );
       return;
