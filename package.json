@@ -1,11 +1,18 @@
 {
-  "name": "api-schema-interceptor",
+  "name": "api-lens",
   "version": "1.0.0",
   "description": "Validate fetch request and response payloads against Zod schemas with clear console output and strict/warn/observe modes.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
   "bin": {
-    "api-schema-interceptor": "bin/api-schema-interceptor.js"
+    "api-lens": "bin/api-lens.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -23,7 +30,8 @@
   "files": [
     "dist",
     "bin",
-    "LICENSE"
+    "LICENSE",
+    "README.md"
   ],
   "keywords": [
     "zod",
@@ -40,15 +48,16 @@
     "debug",
     "devtools",
     "runtime-validation",
-    "api-validation"
+    "api-validation",
+    "lens"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/sidakdhingra25/api-schema-interceptor"
+    "url": "https://github.com/sidakdhingra25/api-lens"
   },
-  "homepage": "https://github.com/sidakdhingra25/api-schema-interceptor#readme",
+  "homepage": "https://github.com/sidakdhingra25/api-lens#readme",
   "bugs": {
-    "url": "https://github.com/sidakdhingra25/api-schema-interceptor/issues"
+    "url": "https://github.com/sidakdhingra25/api-lens/issues"
   },
   "author": "Sidak Dhingra",
   "license": "MIT",

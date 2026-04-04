@@ -33,7 +33,7 @@ function detectFramework(pkg) {
 
 function printHelp() {
   console.log("Usage:");
-  console.log("  api-schema-interceptor init");
+  console.log("  api-lens init");
 }
 
 function createPrompt() {
@@ -142,7 +142,7 @@ async function shouldOverwrite(prompt, relPath) {
 
 function renderConfigFile(mode) {
   return [
-    'import { createInterceptor } from "api-schema-interceptor";',
+    'import { createInterceptor } from "api-lens";',
     'import { z } from "zod";',
     "",
     "export const interceptor = createInterceptor({",
@@ -229,7 +229,7 @@ function printNextManualLayout(providerRelPath) {
 
   console.log("! layout wrapping is manual by design.");
   console.log("  Add this in your root layout (app/layout.tsx or src/app/layout.tsx):");
-  console.log(`    import { InterceptorProvider } from "${fromRoot}";`);
+  console.log(`    import InterceptorProvider from "${fromRoot}";`);
   console.log("    // Wrap your provider tree:");
   console.log(
     `    // <InterceptorProvider><LayoutProvider>${"{children}"}</LayoutProvider></InterceptorProvider>`
@@ -312,8 +312,7 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error("Failed to run api-schema-interceptor CLI.");
+  console.error("Failed to run api-lens CLI.");
   console.error(error instanceof Error ? error.message : error);
   process.exitCode = 1;
 });
-

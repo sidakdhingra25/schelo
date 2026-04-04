@@ -1,4 +1,4 @@
-## API Schema Interceptor
+## API Lens
 
 
 This package helps you validate your API requests and responses against your Zod schemas.
@@ -30,38 +30,73 @@ Here’s what happens, step by step:
 Add this package to your app:
 
 ```bash
-pnpm add api-schema-interceptor
+pnpm add api-lens
 ```
 
 ```bash
-npm install api-schema-interceptor
+npm install api-lens
 ```
 
 You also need **Zod** in your project (it’s a peer dependency—you use it to write your schemas). If you already have Zod, you’re done. If not, add it:
 
 ```bash
-pnpm add api-schema-interceptor zod
+pnpm add api-lens zod
 ```
 
 ```bash
-npm install api-schema-interceptor zod
+npm install api-lens zod
 ```
+
+### Run the CLI
+
+From your app folder:
+
+```bash
+npx api-lens init
+```
+
+### Zod (peer dependency)
+
+- **Supported versions:** `zod` **`>=3.20.0 <5`** (same range as `peerDependencies` in this package’s `package.json`).
+- **Zod 3 and Zod 4** are both fine within that range—define your route schemas with the same Zod your app already uses.
+- This package **does not bundle Zod**. Your app must list `zod` as a dependency so schemas and validation share one library.
+- Keep **a single Zod version** in your dependency tree. If your package manager warns about peers or validation behaves oddly, align `zod` versions and remove duplicate installs (e.g. `pnpm why zod`, `npm ls zod`).
 
 ---
 
-## React setup (manual)
+## React setup
 
 For **Vite**, **CRA**, **React Router**, etc. (not Next.js App Router). There is no React component in this package—call **`interceptor.enable()`** once at startup.
 
-### 1. Schema module
+### 1. Install
 
 ```bash
-npx api-schema-interceptor init
+pnpm add api-lens
+```
+
+```bash
+npm install api-lens
+```
+
+You need **Zod** as a peer dependency (see **Install** above). If it is not already in your project:
+
+```bash
+pnpm add api-lens zod
+```
+
+```bash
+npm install api-lens zod
+```
+
+### 2. Schema module
+
+```bash
+npx api-lens init
 ```
 
 Pick **React**. The CLI creates **`lib/api-schemas.ts`** or **`src/lib/api-schemas.ts`**. Export **`interceptor`** from `createInterceptor({ ... })` (or add that file yourself).
 
-### 2. Enable
+### 3. Enable
 
 Call **`interceptor.enable()`** in your **browser entry file**, right **before** **`createRoot(...).render(...)`** (or **`ReactDOM.render`**).
 
@@ -72,7 +107,7 @@ Call **`interceptor.enable()`** in your **browser entry file**, right **before**
 
 Don’t rely on **`useEffect`** for the first `enable()`—a child may **`fetch`** before that runs. Import **`interceptor`** with a path that resolves from that entry file (e.g. `../lib/api-schemas` or `./lib/api-schemas`).
 
-### 3. Example
+### 4. Example
 
 ```tsx
 import { createRoot } from "react-dom/client";
@@ -87,27 +122,29 @@ createRoot(document.getElementById("root")!).render(<App />);
 
 Fix the import to match your layout. Wrappers (`StrictMode`, router, …) go **inside** `render`; keep **`enable()`** above it.
 
-### 4. `disable()` (optional)
+### 5. `disable()` (optional)
 
 Rarely needed; use for tests or when you restore real **`fetch`**.
 
 ---
 
-## Next.js setup (CLI)
+## Next.js setup (App Router)
 
-### 1. Run the CLI
+### Using the CLI
+
+#### 1. Run the CLI
 
 From your Next.js app folder:
 
 ```bash
-npx api-schema-interceptor init
+npx api-lens init
 ```
 
 Follow the prompts (framework + mode). When it finishes, you’ll have the files below and printed instructions for your root layout.
 
 ---
 
-### 2. What gets created
+#### 2. What gets created
 
 | What | Where (typical paths) |
 | --- | --- |
@@ -119,15 +156,15 @@ Follow the prompts (framework + mode). When it finishes, you’ll have the files
 
 ---
 
-### 3. Wire the provider in your root layout
+#### 3. Wire the provider in your root layout
 
-1. Import `InterceptorProvider` (use the path the CLI printed for your project).
+1. Import the provider (use the path the CLI printed; default export from `InterceptorProvider.tsx`, or a named re-export from `components/providers/index.ts` if the CLI added one).
 2. Wrap `{children}` (and any other providers you use) with it.
 
-Example shape:
+Example shape (default import matches the generated `InterceptorProvider.tsx`):
 
 ```tsx
-import { InterceptorProvider } from "@/components/providers/InterceptorProvider";
+import InterceptorProvider from "@/components/providers/InterceptorProvider";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -141,6 +178,90 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```
 
 Your import path may differ (e.g. `@/src/components/...`); follow the CLI output.
+
+---
+
+### Manual setup (App Router)
+
+Skip `npx api-lens init` if you want full control. Add a **client** provider, wrap your App Router root layout, and define routes in **`lib/api-schemas.ts`** or **`src/lib/api-schemas.ts`**.
+
+#### 1. Provider file
+
+Create **`components/providers/InterceptorProvider.tsx`** (or **`src/components/providers/InterceptorProvider.tsx`**). It must be a client component so `enable()` runs in the browser. Adjust the import to match your aliases (e.g. `@/lib/...`) or use a relative path from the provider file (e.g. `../../lib/api-schemas` from `components/providers/`).
+
+```tsx
+"use client";
+
+import type { ReactNode } from "react";
+import { useEffect } from "react";
+
+import { interceptor } from "@/lib/api-schemas";
+
+type Props = {
+  children: ReactNode;
+};
+
+const InterceptorProvider = ({ children }: Props) => {
+  useEffect(() => {
+    interceptor.enable();
+    return () => interceptor.disable();
+  }, []);
+
+  return <>{children}</>;
+};
+
+export default InterceptorProvider;
+```
+
+#### 2. Wrap children in the root layout
+
+In **`app/layout.tsx`** (or **`src/app/layout.tsx`**), import the provider and wrap **`{children}`**. Put other client providers inside or outside as you prefer—keep `InterceptorProvider` in the tree so client `fetch` runs after mount.
+
+```tsx
+import InterceptorProvider from "@/components/providers/InterceptorProvider";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <InterceptorProvider>{children}</InterceptorProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+Adjust the import to match your project (e.g. `@/src/components/providers/InterceptorProvider`). If you use a barrel file with `export { default as InterceptorProvider } from "./InterceptorProvider"`, you can use a named import from that `index` instead.
+
+#### 3. `lib/api-schemas.ts`
+
+Export an **`interceptor`** from **`createInterceptor`**. Route keys use **`METHOD /path`** (dynamic segments like `:id` are supported). Add **`request`** and/or **`response`** Zod schemas per route.
+
+```ts
+import { createInterceptor } from "api-lens";
+import { z } from "zod";
+
+const apiErrorSchema = z.object({ error: z.string() });
+
+export const interceptor = createInterceptor({
+  mode: "warn",
+  warnOnUnmatched: true,
+  routes: {
+    "GET /api/health": {
+      response: z.union([
+        z.object({ status: z.literal("ok") }),
+        apiErrorSchema,
+      ]),
+    },
+    "POST /api/items": {
+      request: z.object({ title: z.string() }),
+      response: z.union([z.object({ id: z.string() }), apiErrorSchema]),
+    },
+  },
+});
+```
+
+Swap paths and schemas for your real API. For **`mode`**, **`validate: false`**, and other options, see **Example full `api-schemas.ts`** below.
 
 ---
 
@@ -187,7 +308,7 @@ routes: {
 This example shows the main config fields and how route validation works. The URLs below are generic placeholders—swap them for your own API paths.
 
 ```ts
-import { createInterceptor } from "api-schema-interceptor";
+import { createInterceptor } from "api-lens";
 import { z } from "zod";
 
 const userSchema = z.object({
@@ -246,7 +367,7 @@ When a request/response **does not** match your Zod schema, the package prints a
 **Example shape** (wording depends on the field; this matches how failures are formatted):
 
 ```text
-┌─ api-schema-interceptor ────────────────────────────────────────────────────────────────────────────┐
+┌─ api-lens ────────────────────────────────────────────────────────────────────────────┐
 │ FAIL  GET /api/users/:id  [response]                                                                 │
 │                                                                                                      │
 │   ✗  email  invalid format — expected a valid email                                                  │

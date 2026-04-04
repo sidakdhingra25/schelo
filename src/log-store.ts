@@ -92,8 +92,11 @@ export function printToConsole(entry: LogEntry, consoleAggregation: ConsoleAggre
 
   /** Inner width between box borders (wide enough for aggregated array rows). */
   const INNER = 100;
-  const top = "┌─ api-schema-interceptor " + "─".repeat(INNER - 24) + "┐";
+  const label = "api-lens";
+  const topPrefix = `┌─ ${label} `;
   const bottom = "└" + "─".repeat(INNER + 2) + "┘";
+  const top =
+    topPrefix + "─".repeat(Math.max(0, bottom.length - topPrefix.length - 1)) + "┐";
   const blank = `│ ${" ".repeat(INNER)} │`;
   const line = (s: string) => `│ ${s.slice(0, INNER).padEnd(INNER)} │`;
 
