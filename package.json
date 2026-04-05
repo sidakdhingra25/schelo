@@ -1,7 +1,7 @@
 {
   "name": "schelo",
-  "version": "1.0.1",
-  "description": "Validate fetch request and response payloads against Zod schemas with clear console output and strict/warn/observe modes.",
+  "version": "1.0.2",
+  "description": "Validate your api requests and responses types at runtime with Zod schemas",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

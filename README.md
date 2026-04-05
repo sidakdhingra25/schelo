@@ -1,6 +1,6 @@
 ## Schelo
 
-Type-safe APIs from request to response.
+Runtime type safety for your APIs
 
 **Documentation:** [schelo.xyz](https://schelo.xyz)
 
@@ -331,9 +331,6 @@ export const interceptor = createInterceptor({
   // If true, you get a console warning when a route doesn't exist in your schema
   warnOnUnmatched: true,
 
-  // Extra debug logs for route matching (in non-production)
-  debug: true,
-
   routes: {
     // Validated endpoint (default behavior): GET user by id
     "GET /api/users/:id": {
@@ -405,7 +402,6 @@ Set **`consoleAggregation: "off"`** if you prefer **one console row per `FieldEr
 | `mode` | `"observe" \| "warn" \| "strict"` | `"observe"` | **observe** = only notice problems; **warn** = shout in the console; **strict** = stop the app when something is wrong (good for tests) |
 | `routes` | `Record<string, RouteSchema>` | required | The list of URLs you care about and the rules for each one |
 | `warnOnUnmatched` | `boolean` | `false` | If **on**, you get a heads-up when the app calls a URL you never listed |
-| `debug` | `boolean` | `false` | If **on** (and not production), prints extra “which route matched?” lines |
 | `consoleAggregation` | `"off" \| "array"` | `"array"` | **`array`** = collapse repeated **same-shape** array element errors into one `✗` line when possible; **`off`** = one line per Zod issue (legacy). |
 
 ### Route entry options (each `routes["METHOD /path"]` object)
